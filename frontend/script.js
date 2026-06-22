@@ -1,18 +1,68 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 
-const API = 'http://localhost:3000/equipamentos';
-const AUTH_API = 'http://localhost:3000/auth/session';
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const BACKEND_URL = isLocalhost 
+  ? 'http://localhost:3000' 
+  : `${window.location.protocol}//api.${window.location.hostname.replace('app.', '')}`;
 
-const firebaseConfig = window.__FIREBASE_CONFIG__;
+const API = `${BACKEND_URL}/equipamentos`;
+const AUTH_API = `${BACKEND_URL}/auth/session`;
+const CONFIG_API = `${BACKEND_URL}/auth/config`;
 
-if (!firebaseConfig?.apiKey) {
-  console.warn('[AUTH] Firebase config ausente. Defina window.__FIREBASE_CONFIG__ via frontend/firebase-config.local.js.');
+let firebaseConfig = null;
+let isConfigInvalid = true;
+let app = null;
+let auth = null;
+let provider = null;
+
+async function inicializarFirebase() {
+  try {
+    const resposta = await fetch(CONFIG_API);
+    if (!resposta.ok) {
+      throw new Error(`Erro HTTP ao obter config: ${resposta.status}`);
+    }
+    firebaseConfig = await resposta.json();
+    isConfigInvalid = !firebaseConfig?.apiKey || firebaseConfig.apiKey === 'COLOQUE_SUA_CHAVE_AQUI';
+
+    if (isConfigInvalid) {
+      console.warn('[AUTH] Firebase config ausente ou inválida no backend .env.');
+      mostrarAvisoConfig();
+      return;
+    }
+
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    provider = new GoogleAuthProvider();
+    logAuth('Firebase inicializado do backend.');
+
+    onAuthStateChanged(auth, async (loggedUser) => {
+      logAuth('onAuthStateChanged disparado', { logado: Boolean(loggedUser), email: loggedUser?.email });
+      usuarioAtual = loggedUser;
+
+      if (loggedUser) {
+        idTokenAtual = await loggedUser.getIdToken();
+        logAuth('Token renovado pelo state listener', { tamanho: idTokenAtual?.length || 0 });
+        localStorage.setItem('firebaseIdToken', idTokenAtual);
+        atualizarInterfaceAutenticacao(loggedUser);
+        await validarSessaoSalva();
+        return;
+      }
+
+      await validarSessaoSalva();
+    });
+  } catch (erro) {
+    console.error('[AUTH] Falha ao obter configuração do Firebase:', erro);
+    mostrarAvisoConfig();
+  }
 }
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+function mostrarAvisoConfig() {
+  const statusEl = document.getElementById('auth-status');
+  if (statusEl) {
+    statusEl.innerHTML = '<span style="color: #ff4a4a; font-weight: bold;">Configuração do Firebase ausente/inválida!</span><br><small style="color: #ccc;">Defina as variáveis no arquivo <code>backend/.env</code> e reinicie o backend.</small>';
+  }
+}
 
 const form = document.getElementById('form-equipamento');
 const crudArea = document.getElementById('crud-area');
@@ -146,7 +196,7 @@ async function listarProdutos() {
 async function validarSessaoSalva() {
   logAuth('Validando sessão salva', { temToken: Boolean(idTokenAtual) });
 
-  if (!idTokenAtual) {
+  if (isConfigInvalid || !idTokenAtual) {
     atualizarInterfaceAutenticacao(null);
     return;
   }
@@ -244,6 +294,10 @@ function resetarFormulario() {
 form.addEventListener('submit', salvarProduto);
 btnCancelar.addEventListener('click', resetarFormulario);
 btnGoogle.addEventListener('click', async () => {
+  if (isConfigInvalid || !auth || !provider) {
+    alert('Erro: O Firebase não foi configurado no backend. Por favor, edite o arquivo ".env" na pasta "backend" e insira sua FIREBASE_API_KEY real obtida no Console do Firebase.');
+    return;
+  }
   try {
     logAuth('Iniciando signInWithPopup');
     const resultado = await signInWithPopup(auth, provider);
@@ -289,7 +343,9 @@ btnGoogle.addEventListener('click', async () => {
 });
 
 btnLogout.addEventListener('click', async () => {
-  await signOut(auth);
+  if (auth) {
+    await signOut(auth);
+  }
   localStorage.removeItem('firebaseIdToken');
   idTokenAtual = '';
   usuarioAtual = null;
@@ -309,21 +365,7 @@ tbody.addEventListener('click', (evento) => {
   }
 });
 
-onAuthStateChanged(auth, async (loggedUser) => {
-  logAuth('onAuthStateChanged disparado', { logado: Boolean(loggedUser), email: loggedUser?.email });
-  usuarioAtual = loggedUser;
-
-  if (loggedUser) {
-    idTokenAtual = await loggedUser.getIdToken();
-    logAuth('Token renovado pelo state listener', { tamanho: idTokenAtual?.length || 0 });
-    localStorage.setItem('firebaseIdToken', idTokenAtual);
-    atualizarInterfaceAutenticacao(loggedUser);
-    await validarSessaoSalva();
-    return;
-  }
-
-  await validarSessaoSalva();
+logAuth('Aplicação carregada, tentando obter configs e revalidar sessão inicial');
+inicializarFirebase().then(() => {
+  validarSessaoSalva();
 });
-
-logAuth('Aplicação carregada, tentando revalidar sessão inicial');
-validarSessaoSalva();
