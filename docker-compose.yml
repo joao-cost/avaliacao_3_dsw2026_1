@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     image: joaovitorbr/dsw-backend:latest
@@ -23,7 +21,7 @@ services:
       - FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}
       - FIREBASE_APP_ID=${FIREBASE_APP_ID}
     networks:
-      - traefik-net
+      - HDSwarmNet
 
   frontend-nginx:
     image: joaovitorbr/dsw-nginx:latest
@@ -33,16 +31,17 @@ services:
     container_name: dsw-nginx
     restart: always
     networks:
-      - traefik-net
-    labels:
-      - "traefik.enable=true"
-      # Configura o Traefik para responder no seu domínio correto
-      - "traefik.http.routers.dsw-app.rule=Host(`crud-equipamentos.hyperdynamis.com`)"
-      - "traefik.http.routers.dsw-app.entrypoints=websecure"
-      - "traefik.http.routers.dsw-app.tls=true"
-      - "traefik.http.routers.dsw-app.tls.certresolver=letsencrypt" # resolvedor de SSL do seu Traefik (geralmente letsencrypt)
-      - "traefik.http.services.dsw-app.loadbalancer.server.port=80"
+      - HDSwarmNet
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        # Configura o Traefik para responder no seu domínio correto
+        - "traefik.http.routers.dsw-app.rule=Host(`crud-equipamentos.hyperdynamis.com`)"
+        - "traefik.http.routers.dsw-app.entrypoints=websecure"
+        - "traefik.http.routers.dsw-app.tls=true"
+        - "traefik.http.routers.dsw-app.tls.certresolver=letsencryptresolver" # resolvedor de SSL do seu Traefik
+        - "traefik.http.services.dsw-app.loadbalancer.server.port=80"
 
 networks:
-  traefik-net:
-    external: true # Rede externa que conecta com o banco 'mysql' e o Traefik
+  HDSwarmNet:
+    external: true
