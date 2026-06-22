@@ -4,7 +4,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const BACKEND_URL = isLocalhost 
   ? 'http://localhost:3000' 
-  : `${window.location.protocol}//api.${window.location.hostname.replace('app.', '')}`;
+  : '';
 
 const API = `${BACKEND_URL}/equipamentos`;
 const AUTH_API = `${BACKEND_URL}/auth/session`;

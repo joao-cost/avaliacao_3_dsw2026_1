@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    image: joaovitorbr/dsw-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dsw-backend
+    restart: always
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+      - FIREBASE_API_KEY=${FIREBASE_API_KEY}
+      - FIREBASE_AUTH_DOMAIN=${FIREBASE_AUTH_DOMAIN}
+      - FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
+      - FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}
+      - FIREBASE_APP_ID=${FIREBASE_APP_ID}
+    networks:
+      - traefik-net
+
+  frontend-nginx:
+    image: joaovitorbr/dsw-nginx:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dsw-nginx
+    restart: always
+    networks:
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      # Configura o Traefik para responder no seu domínio correto
+      - "traefik.http.routers.dsw-app.rule=Host(`crud-equipamentos.hyperdynamis.com`)"
+      - "traefik.http.routers.dsw-app.entrypoints=websecure"
+      - "traefik.http.routers.dsw-app.tls=true"
+      - "traefik.http.routers.dsw-app.tls.certresolver=letsencrypt" # resolvedor de SSL do seu Traefik (geralmente letsencrypt)
+      - "traefik.http.services.dsw-app.loadbalancer.server.port=80"
+
+networks:
+  traefik-net:
+    external: true # Rede externa que conecta com o banco 'mysql' e o Traefik
