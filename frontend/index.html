@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login e CRUD de Equipamentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <p class="eyebrow">DSW Equipamentos</p>
+      <h1>Login com Firebase e CRUD protegido</h1>
+      <p class="hero-copy">Faça login com Google no Firebase. Depois disso, o token libera as rotas do CRUD.</p>
+    </section>
+
+    <section id="auth-card" class="card panel">
+      <div class="section-header">
+        <div>
+          <h2>Entrar</h2>
+          <p class="panel-copy">O frontend autentica com Google. O backend valida o token e confere o email na tabela de usuários autorizados.</p>
+        </div>
+        <button type="button" id="btn-logout" class="btn-secondary" hidden>Sair</button>
+      </div>
+
+      <div class="auth-grid">
+        <div class="auth-actions">
+          <button type="button" id="btn-google" class="btn-google">Entrar com Google</button>
+        </div>
+
+        <div class="auth-status">
+          <strong>Status</strong>
+          <p id="auth-status">Desconectado</p>
+          <p id="auth-user" class="muted"></p>
+          <div class="auth-media">
+            <img id="auth-photo" alt="Foto do usuário" hidden>
+            <div class="auth-token-wrap">
+              <strong>Token atual</strong>
+              <code id="auth-token" class="auth-token"></code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="crud-area" class="hidden">
+      <form id="form-equipamento" class="card panel">
+        <input type="hidden" id="equipamento-id">
+
+        <div class="grid-form">
+          <label>
+            Nome:
+            <input type="text" id="nome" required>
+          </label>
+
+          <label>
+            Marca:
+            <input type="text" id="marca" required>
+          </label>
+
+          <label>
+            Modelo:
+            <input type="text" id="modelo" required>
+          </label>
+
+          <label>
+            Setor:
+            <select id="setor" required>
+              <option value="" selected disabled>Selecione um setor</option>
+              <option value="TI">TI</option>
+              <option value="Financeiro">Financeiro</option>
+              <option value="Sala de Aula">Sala de Aula</option>
+              <option value="Administrativo">Administrativo</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </label>
+
+          <label>
+            Estado:
+            <select id="estado" required>
+              <option value="" selected disabled>Selecione um estado</option>
+              <option value="Bom">Bom</option>
+              <option value="Manutenção">Manutenção</option>
+              <option value="Em uso">Em uso</option>
+              <option value="Inativo">Inativo</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="botoes">
+          <button type="submit" id="btn-salvar">Salvar</button>
+          <button type="button" id="btn-cancelar" hidden>Cancelar</button>
+        </div>
+      </form>
+
+      <section class="card panel">
+        <div class="section-header">
+          <h2>Lista de Equipamentos</h2>
+          <span class="badge">Protegido por token</span>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tabela-equipamentos">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Setor</th>
+                <th>Estado</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="firebase-config.local.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>

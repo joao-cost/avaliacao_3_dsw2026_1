@@ -1,0 +1,94 @@
+### OS files ###
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Node ###
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+
+### Environment ###
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+### Build / Dist ###
+dist/
+build/
+out/
+.next/
+/.parcel-cache/
+/.vercel/
+
+### Logs ###
+logs
+*.log
+logs/*
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+### Databases ###
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+*.bak
+
+### IDEs and editors ###
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+
+### Python (if present) ###
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+env/
+ENV/
+venv.bak/
+
+### Backup files ###
+*.bak
+*.tmp
+*.temp
+
+### Misc ###
+.cache/
+.parcel-cache/
+.sass-cache/
+coverage/
+coverage-final.json
+/.turbo/
+
+# Ignore local config
+local.env
+secrets.json
+backend/serviceAccountKey.json
+backend/dsw2026-1-3f2df-firebase-adminsdk-fbsvc-0aef5ffad8.json
+frontend/firebase-config.local.js
+!backend/database.sql
+
+# JetBrains
+.idea/
+
+# End
