@@ -81,6 +81,7 @@ const panelLogin = document.getElementById('panel-login');
 const panelLogged = document.getElementById('panel-logged');
 const authName = document.getElementById('auth-name');
 const authEmail = document.getElementById('auth-email');
+const authRole = document.getElementById('auth-role');
 const authPhoto = document.getElementById('auth-photo');
 const authToken = document.getElementById('auth-token');
 const tbody = document.querySelector('#tabela-equipamentos tbody');
@@ -104,12 +105,17 @@ function atualizarInterfaceAutenticacao(loggedUser) {
     authToken.textContent = '';
     authName.textContent = '';
     authEmail.textContent = '';
+    if (authRole) authRole.textContent = '';
     return;
   }
 
-  authName.textContent = loggedUser.displayName || 'Usuário';
+  authName.textContent = loggedUser.displayName || loggedUser.name || 'Usuário';
   authEmail.textContent = loggedUser.email || '';
   authToken.textContent = idTokenAtual || '';
+
+  if (authRole) {
+    authRole.textContent = loggedUser.perfil === 'admin' ? 'Administrador' : 'Usuário Autenticado';
+  }
 
   if (loggedUser.photoURL) {
     authPhoto.src = loggedUser.photoURL;
@@ -218,9 +224,10 @@ async function validarSessaoSalva() {
     logAuth('Sessão aprovada pelo backend', dados.user);
     usuarioAtual = dados.user;
     atualizarInterfaceAutenticacao({
-      displayName: dados.user?.nome || dados.user?.displayName || 'Usuário autenticado',
+      displayName: dados.user?.usuarioBanco?.nome || dados.user?.name || dados.user?.displayName || dados.user?.nome || 'Usuário',
       email: dados.user?.email || '',
       photoURL: dados.foto || dados.user?.picture || dados.user?.photoURL || '',
+      perfil: dados.user?.usuarioBanco?.perfil || 'usuario'
     });
     if (dados.tokenUsado) {
       logAuth('Token retornado pelo backend', `${dados.tokenUsado.slice(0, 28)}...`);
@@ -330,6 +337,14 @@ btnGoogle.addEventListener('click', async () => {
       logAuth('Backend recusou o usuário', erro);
       throw new Error(erro.erro || 'Usuário autenticado, mas não liberado no banco');
     }
+
+    const dadosValidacao = await validacao.json();
+    atualizarInterfaceAutenticacao({
+      displayName: dadosValidacao.user?.usuarioBanco?.nome || dadosValidacao.user?.name || resultado.user.displayName || 'Usuário',
+      email: resultado.user.email,
+      photoURL: dadosValidacao.foto || resultado.user.photoURL || '',
+      perfil: dadosValidacao.user?.usuarioBanco?.perfil || 'usuario'
+    });
 
     if (authStatus) authStatus.textContent = 'Login validado com sucesso';
     logAuth('Login validado com sucesso, carregando CRUD');
