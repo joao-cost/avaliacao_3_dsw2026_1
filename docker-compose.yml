@@ -1,9 +1,9 @@
 services:
   backend:
-    image: joaovitorbr/dsw-backend:latest
+    image: joaovitorbr/avaliacao_3_dsw2026_1:latest
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: dsw-backend
     restart: always
     environment:
@@ -22,16 +22,6 @@ services:
       - FIREBASE_APP_ID=${FIREBASE_APP_ID}
     networks:
       - HDSwarmNet
-
-  frontend-nginx:
-    image: joaovitorbr/dsw-nginx:latest
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: dsw-nginx
-    restart: always
-    networks:
-      - HDSwarmNet
     deploy:
       labels:
         - "traefik.enable=true"
@@ -40,7 +30,7 @@ services:
         - "traefik.http.routers.dsw-app.entrypoints=websecure"
         - "traefik.http.routers.dsw-app.tls=true"
         - "traefik.http.routers.dsw-app.tls.certresolver=letsencryptresolver" # resolvedor de SSL do seu Traefik
-        - "traefik.http.services.dsw-app.loadbalancer.server.port=80"
+        - "traefik.http.services.dsw-app.loadbalancer.server.port=3000"
 
 networks:
   HDSwarmNet:

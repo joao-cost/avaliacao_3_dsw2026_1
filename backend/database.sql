@@ -30,7 +30,7 @@ CREATE TABLE equipamentos (
 );
 
 INSERT INTO usuarios_autorizados (nome, email, perfil, ativo) VALUES
-('Seu Nome', 'seuemail@exemplo.com', 'admin', 1),
+('João Vitor', 'joaovitor00220@gmail.com', 'admin', 1),
 ('Professor', 'professor@exemplo.com', 'admin', 1)
 ON DUPLICATE KEY UPDATE
     nome = VALUES(nome),

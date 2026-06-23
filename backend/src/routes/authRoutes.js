@@ -3,7 +3,6 @@ import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = Router();
 
-// Rota pública para expor as configurações do Firebase Web ao Frontend (evitando arquivos JS locais)
 router.get('/config', (req, res) => {
   res.json({
     apiKey: process.env.FIREBASE_API_KEY,
