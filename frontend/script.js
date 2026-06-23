@@ -72,15 +72,16 @@ const inputMarca = document.getElementById('marca');
 const inputModelo = document.getElementById('modelo');
 const inputSetor = document.getElementById('setor');
 const inputEstado = document.getElementById('estado');
+const tituloForm = document.getElementById('titulo-form');
 const btnCancelar = document.getElementById('btn-cancelar');
 const btnGoogle = document.getElementById('btn-google');
 const btnLogout = document.getElementById('btn-logout');
-const authStatus = document.getElementById('auth-status');
-const authUser = document.getElementById('auth-user');
+const panelLogin = document.getElementById('panel-login');
+const panelLogged = document.getElementById('panel-logged');
+const authName = document.getElementById('auth-name');
+const authEmail = document.getElementById('auth-email');
 const authPhoto = document.getElementById('auth-photo');
 const authToken = document.getElementById('auth-token');
-const authGrid = document.querySelector('.auth-grid');
-const authActions = document.querySelector('.auth-actions');
 const tbody = document.querySelector('#tabela-equipamentos tbody');
 
 let idTokenAtual = localStorage.getItem('firebaseIdToken') || '';
@@ -94,27 +95,25 @@ function atualizarInterfaceAutenticacao(loggedUser) {
   const autenticado = Boolean(loggedUser && idTokenAtual);
 
   crudArea.classList.toggle('hidden', !autenticado);
-  btnLogout.hidden = !autenticado;
-  btnGoogle.hidden = autenticado;
-  authActions.hidden = autenticado;
-  authGrid.classList.toggle('authenticated', autenticado);
-
-  authToken.textContent = idTokenAtual ? `${idTokenAtual.slice(0, 28)}...` : '';
-  authPhoto.hidden = true;
-  authPhoto.removeAttribute('src');
+  panelLogin.classList.toggle('hidden', autenticado);
+  panelLogged.classList.toggle('hidden', !autenticado);
 
   if (!loggedUser) {
-    authStatus.textContent = 'Desconectado';
-    authUser.textContent = '';
+    authPhoto.removeAttribute('src');
+    authToken.textContent = '';
+    authName.textContent = '';
+    authEmail.textContent = '';
     return;
   }
 
-  authStatus.textContent = 'Conectado';
-  authUser.textContent = `${loggedUser.displayName || 'Usuário'} · ${loggedUser.email || ''}`;
+  authName.textContent = loggedUser.displayName || 'Usuário';
+  authEmail.textContent = loggedUser.email || '';
+  authToken.textContent = idTokenAtual || '';
 
   if (loggedUser.photoURL) {
     authPhoto.src = loggedUser.photoURL;
-    authPhoto.hidden = false;
+  } else {
+    authPhoto.src = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'; // Fallback
   }
 }
 
@@ -275,6 +274,7 @@ async function editarProduto(id) {
   inputModelo.value = equipamento.modelo;
   inputSetor.value = equipamento.setor;
   inputEstado.value = equipamento.estado;
+  if (tituloForm) tituloForm.textContent = 'Editar Equipamento';
   btnCancelar.hidden = false;
 }
 
@@ -288,6 +288,7 @@ async function excluirProduto(id) {
 function resetarFormulario() {
   form.reset();
   inputId.value = '';
+  if (tituloForm) tituloForm.textContent = 'Cadastrar Equipamento';
   btnCancelar.hidden = true;
 }
 

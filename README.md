@@ -11,6 +11,39 @@ Este documento apresenta a estrutura do projeto da **Avaliação Final de Desenv
 
 ---
 
+## 📂 Estrutura de Pastas
+
+A estrutura organizacional do projeto é apresentada a seguir:
+
+```text
+├── .env.example
+├── .gitignore
+├── README.md
+├── docker-compose.yml
+├── backend/
+│   ├── Dockerfile
+│   ├── database.sql
+│   ├── package.json
+│   └── src/
+│       ├── server.js
+│       ├── config/
+│       │   ├── database.js
+│       │   └── firebaseAdmin.js
+│       ├── controllers/
+│       │   └── equipamentosController.js
+│       ├── middleware/
+│       │   └── authMiddleware.js
+│       └── routes/
+│           ├── authRoutes.js
+│           └── equipamentosRoutes.js
+└── frontend/
+    ├── index.html
+    ├── script.js
+    └── style.css
+```
+
+---
+
 ## 🎨 1. Sobre a Refatoração do Frontend
 A interface do frontend foi levemente refatorada para obter uma usabilidade melhor, mais responsiva e no padrão Dark Mode. As modificações foram apenas estéticas.
 * Toda a lógica de interação (login via popup do Google no Firebase, captura de tokens de sessão e requisições HTTP do CRUD) foi mantida exatamente igual à especificação inicial do sistema.

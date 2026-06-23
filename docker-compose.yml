@@ -1,9 +1,6 @@
 services:
   backend:
     image: joaovitorbr/avaliacao_3_dsw2026_1:latest
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
     container_name: dsw-backend
     restart: always
     environment:

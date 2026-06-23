@@ -114,7 +114,7 @@ body:has(.auth-grid.authenticated) .hero {
 }
 
 /* Layout Desconectado (Card de Login Centrado) */
-#auth-card:not(:has(.auth-grid.authenticated)) {
+#auth-card:has(#panel-logged.hidden) {
   max-width: 450px;
   margin: 2rem auto 4rem;
   padding: 3rem 2.25rem;
@@ -122,14 +122,14 @@ body:has(.auth-grid.authenticated) .hero {
   box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 50px -10px rgba(16, 185, 129, 0.05);
 }
 
-#auth-card:not(:has(.auth-grid.authenticated)) .section-header {
+#auth-card:has(#panel-logged.hidden) .section-header {
   flex-direction: column;
   text-align: center;
   gap: 0.75rem;
   margin-bottom: 2.25rem;
 }
 
-#auth-card:not(:has(.auth-grid.authenticated)) .section-header h2 {
+#auth-card:has(#panel-logged.hidden) .section-header h2 {
   font-size: 1.85rem;
   font-weight: 800;
   background: linear-gradient(135deg, #ffffff 50%, #94a3b8 100%);
@@ -138,63 +138,23 @@ body:has(.auth-grid.authenticated) .hero {
   letter-spacing: -0.01em;
 }
 
-#auth-card:not(:has(.auth-grid.authenticated)) .panel-copy {
+#auth-card:has(#panel-logged.hidden) .panel-copy {
   font-size: 0.95rem;
   color: var(--muted);
   line-height: 1.4;
 }
 
-#auth-card:not(:has(.auth-grid.authenticated)) .auth-grid {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+#auth-card:has(#panel-logged.hidden) .auth-actions {
   width: 100%;
 }
 
-#auth-card:not(:has(.auth-grid.authenticated)) .auth-actions {
-  width: 100%;
-}
-
-#auth-card:not(:has(.auth-grid.authenticated)) .auth-status {
-  width: 100%;
-  margin-top: 1.75rem;
-  padding: 1rem 1.25rem;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px dashed rgba(255, 255, 255, 0.08);
-}
-
-/* Ocultar elementos irrelevantes na tela de login deslogada */
-#auth-card:not(:has(.auth-grid.authenticated)) .auth-status strong,
-#auth-card:not(:has(.auth-grid.authenticated)) .auth-status p:not(#auth-status),
-#auth-card:not(:has(.auth-grid.authenticated)) .auth-status .auth-token-wrap {
-  display: none !important;
-}
-
-/* Layout Autenticado (Barra de Navegação Topo) */
-#auth-card:has(.auth-grid.authenticated) {
-  padding: 1.15rem 2rem 3.8rem; /* Espaço inferior para o token absolute */
-  margin-bottom: 3rem;
+/* Layout Autenticado (Perfil do Usuário) */
+#auth-card:has(#panel-login.hidden) {
+  max-width: 1000px;
+  margin: 0 auto 3rem;
+  padding: 2.25rem;
   border-radius: 16px;
-  position: relative;
-}
-
-#auth-card:has(.auth-grid.authenticated) .section-header > div {
-  display: none; /* Oculta títulos de login */
-}
-
-#auth-card:has(.auth-grid.authenticated) .section-header {
-  order: 2; /* Sair vai para a direita */
-  margin-bottom: 0;
-  width: auto;
-}
-
-#auth-card:has(.auth-grid.authenticated) .auth-grid {
-  order: 1; /* Infos do usuário vão para a esquerda */
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
 }
 
 /* BOTAO ENTRAR COM GOOGLE */
@@ -227,74 +187,64 @@ body:has(.auth-grid.authenticated) .hero {
 }
 
 /* ELEMENTOS DE PERFIL (LOGADO) */
-.auth-grid.authenticated .auth-status {
+.profile-container {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-  background: transparent;
-  border: none;
-  padding: 0;
+  gap: 2.5rem;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.profile-left {
+  flex: 0 0 auto;
+}
+
+#auth-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+  object-fit: cover;
+  display: block;
+}
+
+.profile-right {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.user-details h2 {
+  font-size: 1.6rem;
+  font-weight: 850;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.user-details p {
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.auth-token-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   width: 100%;
 }
 
-.auth-grid.authenticated .auth-status strong:first-of-type {
-  display: none; /* Oculta legenda do Status */
-}
-
-.auth-grid.authenticated #auth-status {
-  order: 3;
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--primary);
-  background: rgba(16, 185, 129, 0.12);
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.auth-grid.authenticated #auth-user {
-  order: 2;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--text);
-}
-
-.auth-grid.authenticated .auth-media {
-  order: 1;
-  display: flex;
-  align-items: center;
-}
-
-.auth-grid.authenticated #auth-photo {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid var(--primary);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
-  object-fit: cover;
-}
-
-/* TOKEN JWT EMBUTIDO NO RODAPÉ DO NAVBAR */
-.auth-grid.authenticated .auth-token-wrap {
-  position: absolute;
-  bottom: 0.85rem;
-  left: 2rem;
-  right: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding-top: 0.75rem;
-}
-
-.auth-grid.authenticated .auth-token-wrap strong {
+.auth-token-wrap strong {
   font-size: 0.75rem;
   color: var(--muted);
-  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .auth-token {
@@ -302,33 +252,41 @@ body:has(.auth-grid.authenticated) .hero {
   font-size: 0.75rem;
   background: #040811;
   color: #a7f3d0;
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  max-width: 320px;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-break: break-all;
+  white-space: pre-wrap;
+  display: block;
+  max-height: 150px;
+  overflow-y: auto;
+  line-height: 1.4;
 }
 
-/* BOTAO SAIR (LOGOUT) */
-.btn-secondary {
-  background: var(--secondary);
-  color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+/* BOTAO SAIR (LOGOUT VERMELHO) */
+.btn-logout {
+  align-self: flex-end; /* Align fully to the right of the profile-right div */
+  background: var(--danger);
+  color: #ffffff;
+  border: none;
   font-family: var(--font);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  padding: 0.6rem 1.25rem;
+  padding: 0.7rem 1.75rem;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
-.btn-secondary:hover {
-  background: var(--secondary-hover);
+.btn-logout:hover {
+  background: var(--danger-hover);
   transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+}
+
+.btn-logout:active {
+  transform: translateY(0);
 }
 
 /* LAYOUT DO DASHBOARD (FORM + TABELA EM GRID) */
