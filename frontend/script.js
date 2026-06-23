@@ -75,6 +75,7 @@ const inputEstado = document.getElementById('estado');
 const tituloForm = document.getElementById('titulo-form');
 const btnCancelar = document.getElementById('btn-cancelar');
 const btnGoogle = document.getElementById('btn-google');
+const authStatus = document.getElementById('auth-status');
 const btnLogout = document.getElementById('btn-logout');
 const panelLogin = document.getElementById('panel-login');
 const panelLogged = document.getElementById('panel-logged');
@@ -225,7 +226,7 @@ async function validarSessaoSalva() {
       logAuth('Token retornado pelo backend', `${dados.tokenUsado.slice(0, 28)}...`);
       authToken.textContent = `${dados.tokenUsado.slice(0, 28)}...`;
     }
-    authStatus.textContent = 'Sessão revalidada com sucesso';
+    if (authStatus) authStatus.textContent = 'Sessão revalidada com sucesso';
     await listarProdutos();
   } catch {
     localStorage.removeItem('firebaseIdToken');
@@ -330,7 +331,7 @@ btnGoogle.addEventListener('click', async () => {
       throw new Error(erro.erro || 'Usuário autenticado, mas não liberado no banco');
     }
 
-    authStatus.textContent = 'Login validado com sucesso';
+    if (authStatus) authStatus.textContent = 'Login validado com sucesso';
     logAuth('Login validado com sucesso, carregando CRUD');
     await listarProdutos();
   } catch (error) {
@@ -339,7 +340,7 @@ btnGoogle.addEventListener('click', async () => {
     idTokenAtual = '';
     usuarioAtual = null;
     atualizarInterfaceAutenticacao(null);
-    authStatus.textContent = error.message || 'Falha ao autenticar';
+    if (authStatus) authStatus.textContent = error.message || 'Falha ao autenticar';
   }
 });
 
