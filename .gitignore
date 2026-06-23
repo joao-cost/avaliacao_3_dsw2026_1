@@ -86,6 +86,7 @@ backend/serviceAccountKey.json
 backend/dsw2026-1-3f2df-firebase-adminsdk-fbsvc-0aef5ffad8.json
 frontend/firebase-config.local.js
 !backend/database.sql
+!backend/dump-dsw_equipamentos.sql
 
 # JetBrains
 .idea/
